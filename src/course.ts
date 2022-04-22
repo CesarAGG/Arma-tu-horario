@@ -1,20 +1,20 @@
 export class Course {
     title: string;
     professor: string;
-    schedule: ClassSchedule;
+    schedule: IClassSchedule;
 
-    constructor(title: string, professor: string, schedule: ClassSchedule) {
+    constructor(title: string, professor: string, schedule: IClassSchedule) {
         this.title = title;
         this.professor = professor;
         this.schedule = schedule;
     }
 
-    setSchedule(day: Day, session: Session) {
+    setSession(day: Day, session: ISession) {
         this.schedule[day] = session;
     }
 
-    logSchedule() {
-        console.log(this.schedule);
+    getSession(day: Day): ISession {
+        return this.schedule[day];
     }
 
 }
@@ -25,16 +25,16 @@ type MM = '00' | '01' | '02' | '03' | '04' | '05' | '06' | '07' | '08' | '09' | 
 type Day = 'monday' | 'tuesday' | 'wednesday' | 'thursday' | 'friday' | 'saturday';
 type Time = `${HH}:${MM}`;
 
-interface Session {
+interface ISession {
     startTime: Time;
     endTime: Time;
 }
 
-interface ClassSchedule {
-    monday: Session;
-    tuesday: Session;
-    wednesday: Session;
-    thursday: Session;
-    friday: Session;
-    saturday: Session;
+interface IClassSchedule {
+    monday?: ISession;
+    tuesday?: ISession;
+    wednesday?: ISession;
+    thursday?: ISession;
+    friday?: ISession;
+    saturday?: ISession;
 }
