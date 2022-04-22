@@ -9,8 +9,8 @@ export class Course {
         this.schedule = schedule;
     }
 
-    setSchedule(day: Day, startTime: Time, endTime: Time) {
-        this.schedule[day] = { startTime, endTime };
+    setSchedule(day: Day, session: Session) {
+        this.schedule[day] = session;
     }
 
     logSchedule() {
