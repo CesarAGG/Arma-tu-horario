@@ -1,3 +1,5 @@
 *test*
 node_modules
 .vscode
+# Por ahora ignoramos bundle.js ya que solo estamos haciendo pruebas
+bundle.js
