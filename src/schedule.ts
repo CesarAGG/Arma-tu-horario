@@ -20,6 +20,12 @@ export class Schedule {
     // It's VERY important to add new courses at the start of the courses array.
     // Otherwise, the filterOut functions will delete the newly added course.
 
+    addCourse(course: Course): void {
+        this.courses.unshift(course);
+        this.filterOutDuplicateCourses();
+        this.filterOutOverlappingCourses();
+    }
+
     /**
      * Filter out courses that have the same title as another course.
      */
