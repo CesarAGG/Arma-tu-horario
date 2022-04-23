@@ -49,7 +49,7 @@ export interface ISession {
     endTime: Time;
 }
 
-interface IClassSchedule {
+export interface IClassSchedule {
     monday?: ISession;
     tuesday?: ISession;
     wednesday?: ISession;
