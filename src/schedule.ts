@@ -1,4 +1,5 @@
-import { Course, Day, Time, ISession } from "./course";
+import { Course, ISession } from "./course";
+import { Day, Time } from "./mydaytime";
 
 let days: Day[] = ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday"];
 
