@@ -12,7 +12,7 @@ export class Schedule {
     }
 
     getCoursesJSON(): any {
-        return JSON.stringify(this.courses);
+        return JSON.stringify(this.courses, null, 2);
     }
 
     // It's VERY important to add new courses at the start of the courses array.
