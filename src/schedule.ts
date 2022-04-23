@@ -7,7 +7,9 @@ export class Schedule {
 
     constructor(courses: Course[]) {
         this.courses = courses;
-
+        // I decided to first filter out the duplicate titles and then the overlapping sessions.
+        // Mostly because sessions shouldn't even be overlapping in the first place if the input is validated.
+        this.filterOutDuplicateCourses();
         this.filterOutOverlappingCourses();
     }
 
@@ -71,7 +73,8 @@ function parseTime(time: Time): number {
     return hours * 60 + minutes;
 }
 
-function sessionOverlap(s1: ISession, s2: ISession): boolean {
+// This function might be useful in another file.
+export function sessionOverlap(s1: ISession, s2: ISession): boolean {
     let s1Start = parseTime(s1.startTime);
     let s1End = parseTime(s1.endTime);
     let s2Start = parseTime(s2.startTime);
