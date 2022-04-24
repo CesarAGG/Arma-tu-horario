@@ -5,8 +5,8 @@ const DAYS: Day[] = ["monday", "tuesday", "wednesday", "thursday", "friday", "sa
 //TODO: this should be entered by the user in the UI, validate if the start time is before the end time
 // and if the difference between the start and end time is a multiple of the interval
 const INTERVAL: Time = "00:30"
-const START_TIME: Time = "09:00";
-const END_TIME: Time = "22:00";
+const START_TIME: Time = "00:00";
+const END_TIME: Time = "24:00";
 
 function _drawSchedule(schedule: Schedule) {
     // Get the table div element and delete the old table
@@ -74,7 +74,6 @@ function generateScheduleMatrix(schedule: Schedule) {
             }
         }
     }
-    console.log(matrix);
     return matrix;
 }
 
