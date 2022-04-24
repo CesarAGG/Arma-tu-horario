@@ -27,6 +27,18 @@ export class Schedule {
         this.filterOutOverlappingCourses();
     }
 
+    getDaySessions(day: Day): DaySessions {
+        return new DaySessions(day, this.courses);
+    }
+
+    getAllDaySessions(): DaySessions[] {
+        let daySessions: DaySessions[] = [];
+        for (let day of days) {
+            daySessions.push(this.getDaySessions(day));
+        }
+        return daySessions;
+    }
+
     /**
      * Filter out courses that have the same title as another course.
      */
@@ -97,4 +109,30 @@ export function sessionOverlap(s1: ISession, s2: ISession): boolean {
     let s2Start = parseTime(s2.startTime);
     let s2End = parseTime(s2.endTime);
     return s1Start < s2End && s2Start < s1End;
+}
+
+interface CompleteISession extends ISession {
+    title: string;
+    professor: string;
+}
+class DaySessions {
+    day: Day;
+    // Sessions must be sorted by startTime.
+    sessions: CompleteISession[];
+
+    constructor(day: Day, courses: Course[]) {
+        this.day = day;
+        this.sessions = [];
+        for (let course of courses) {
+            let session = course.getSession(day);
+            if (session !== undefined) {
+                this.sessions.push({ "startTime": session.startTime, "endTime": session.endTime, "title": course.title, "professor": course.professor });
+            }
+        }
+        this.sortSessions();
+    }
+
+    sortSessions(): void {
+        this.sessions.sort((s1, s2) => parseTime(s1.startTime) - parseTime(s2.startTime));
+    }
 }
