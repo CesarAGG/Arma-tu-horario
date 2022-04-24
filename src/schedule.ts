@@ -1,5 +1,5 @@
 import { Course, ISession } from "./course";
-import { Day, Time } from "./mydaytime";
+import { Day, parseTime } from "./mydaytime";
 
 let days: Day[] = ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday"];
 
@@ -93,13 +93,6 @@ function logFilterOut(course: Course, reason: string, otherCourse?: Course): voi
             console.log(`${day}: ${courseSession.startTime} - ${courseSession.endTime} overlapped by ${otherCourseSession.startTime} - ${otherCourseSession.endTime}`);
         }
     }
-}
-
-function parseTime(time: Time): number {
-    let timeParts = time.split(":");
-    let hours = parseInt(timeParts[0]);
-    let minutes = parseInt(timeParts[1]);
-    return hours * 60 + minutes;
 }
 
 // This function might be useful in another file.
