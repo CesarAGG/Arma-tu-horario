@@ -1,4 +1,4 @@
-import { Day, Time } from './mydaytime';
+import { Day, Time, parseTime } from './mydaytime';
 
 export class Course {
     title: string;
@@ -38,11 +38,25 @@ export class Course {
         return this.classSchedule[day];
     }
 
+    static sessionOverlap(s1: ISession, s2: ISession): boolean {
+        let s1Start = parseTime(s1.startTime);
+        let s1End = parseTime(s1.endTime);
+        let s2Start = parseTime(s2.startTime);
+        let s2End = parseTime(s2.endTime);
+        return s1Start < s2End && s2Start < s1End;
+    }
+
+
 }
 
 export interface ISession {
     startTime: Time;
     endTime: Time;
+}
+
+export interface ICompleteSession extends ISession {
+    title: string;
+    professor: string;
 }
 
 export interface IClassSchedule {

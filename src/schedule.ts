@@ -1,10 +1,13 @@
-import { Course, ISession } from "./course";
-import { Day, parseTime } from "./mydaytime";
+import { Course, ISession, ICompleteSession } from "./course";
+import { Day, Time, parseTime } from "./mydaytime";
 
 let days: Day[] = ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday"];
 
 export class Schedule {
     courses: Course[];
+    earliestStartTime: Time;
+    latestEndTime: Time;
+    allDaySessions: DaySessions[] = [];
 
     constructor(courses: Course[]) {
         this.courses = courses;
@@ -12,6 +15,7 @@ export class Schedule {
         // Mostly because sessions shouldn't even be overlapping in the first place if the input is validated.
         this.filterOutDuplicateCourses();
         this.filterOutOverlappingCourses();
+        this.setAllDaySessions();
     }
 
     getCoursesJSON(): any {
@@ -25,6 +29,7 @@ export class Schedule {
         this.courses.unshift(course);
         this.filterOutDuplicateCourses();
         this.filterOutOverlappingCourses();
+        this.setAllDaySessions();
     }
 
     getDaySessions(day: Day): DaySessions {
@@ -32,21 +37,30 @@ export class Schedule {
     }
 
     getAllDaySessions(): DaySessions[] {
-        let daySessions: DaySessions[] = [];
+        return this.allDaySessions;
+    }
+
+    private setAllDaySessions(): void {
+        let allDaySessions: DaySessions[] = [];
         for (let day of days) {
-            daySessions.push(this.getDaySessions(day));
+            allDaySessions.push(this.getDaySessions(day));
         }
-        return daySessions;
+        this.allDaySessions = allDaySessions;
+    }
+
+    private setEarliestStartTime(): void {
+        let earliestStartTime = parseTime("24:00");
+        // TODO: finish this
     }
 
     /**
      * Filter out courses that have the same title as another course.
      */
-    filterOutDuplicateCourses(): void {
+    private filterOutDuplicateCourses(): void {
         this.courses = this.courses.filter((course, index, self) => {
             let courseTitles = self.map(c => c.title);
             if (courseTitles.indexOf(course.title) !== index) {
-                logFilterOut(course, "Duplicate title");
+                Schedule.logFilterOut(course, "Duplicate title");
                 return false;
             }
             return true;
@@ -55,7 +69,7 @@ export class Schedule {
     /**
      * Filter out courses with overlapping sessions using the function sessionOverlap().
      */
-    filterOutOverlappingCourses(): void {
+    private filterOutOverlappingCourses(): void {
         for (let day of days) {
             this.courses = this.courses.filter((course, index, self) => {
                 let courseSession = course.getSession(day);
@@ -67,8 +81,8 @@ export class Schedule {
                     if (otherCourseSession === undefined) {
                         continue;
                     }
-                    if (sessionOverlap(otherCourseSession, courseSession)) {
-                        logFilterOut(course, "Overlapping sessions", self[i]);
+                    if (Course.sessionOverlap(otherCourseSession, courseSession)) {
+                        Schedule.logFilterOut(course, "Overlapping sessions", self[i]);
                         return false;
                     }
                 }
@@ -76,42 +90,31 @@ export class Schedule {
             });
         }
     }
-}
 
-function logFilterOut(course: Course, reason: string, otherCourse?: Course): void {
-    if (reason === "Duplicate title") {
-        console.log(`Course ${course.title} from professor ${course.professor} was filtered out in favor of another course with the same title.`);
-    } else if (reason === "Overlapping sessions") {
-        console.log(`Course ${course.title} from professor ${course.professor} was filtered out in favor of the overlapping course ${otherCourse.title} from professor ${otherCourse.professor}. The overlaps found were:`);
-        for (let day of days) {
-            // log the startTime and endTime of the course and the otherCourse
-            let courseSession = course.getSession(day);
-            let otherCourseSession = otherCourse.getSession(day);
-            if (courseSession === undefined || otherCourseSession === undefined || !sessionOverlap(courseSession, otherCourseSession)) {
-                continue;
+    private static logFilterOut(course: Course, reason: string, otherCourse?: Course): void {
+        if (reason === "Duplicate title") {
+            console.log(`Course ${course.title} from professor ${course.professor} was filtered out in favor of another course with the same title.`);
+        } else if (reason === "Overlapping sessions") {
+            console.log(`Course ${course.title} from professor ${course.professor} was filtered out in favor of the overlapping course ${otherCourse.title} from professor ${otherCourse.professor}. The overlaps found were:`);
+            for (let day of days) {
+                // log the startTime and endTime of the course and the otherCourse
+                let courseSession = course.getSession(day);
+                let otherCourseSession = otherCourse.getSession(day);
+                if (courseSession === undefined || otherCourseSession === undefined || !Course.sessionOverlap(courseSession, otherCourseSession)) {
+                    continue;
+                }
+                console.log(`${day}: ${courseSession.startTime} - ${courseSession.endTime} overlapped by ${otherCourseSession.startTime} - ${otherCourseSession.endTime}`);
             }
-            console.log(`${day}: ${courseSession.startTime} - ${courseSession.endTime} overlapped by ${otherCourseSession.startTime} - ${otherCourseSession.endTime}`);
         }
     }
 }
 
-// This function might be useful in another file.
-export function sessionOverlap(s1: ISession, s2: ISession): boolean {
-    let s1Start = parseTime(s1.startTime);
-    let s1End = parseTime(s1.endTime);
-    let s2Start = parseTime(s2.startTime);
-    let s2End = parseTime(s2.endTime);
-    return s1Start < s2End && s2Start < s1End;
-}
-
-interface CompleteISession extends ISession {
-    title: string;
-    professor: string;
-}
 class DaySessions {
     day: Day;
     // Sessions must be sorted by startTime.
-    sessions: CompleteISession[];
+    sessions: ICompleteSession[];
+    startTime: Time;
+    endTime: Time;
 
     constructor(day: Day, courses: Course[]) {
         this.day = day;
@@ -123,9 +126,11 @@ class DaySessions {
             }
         }
         this.sortSessions();
+        this.startTime = this.sessions[0].startTime;
+        this.endTime = this.sessions[this.sessions.length - 1].endTime;
     }
 
-    sortSessions(): void {
+    private sortSessions(): void {
         this.sessions.sort((s1, s2) => parseTime(s1.startTime) - parseTime(s2.startTime));
     }
 }
