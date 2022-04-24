@@ -19,6 +19,11 @@ export class AllCourseOptions {
 class Option {
     professor: string;
     classSchedule: IClassSchedule;
+
+    toCourse(title: string) {
+        return new Course(title, this.professor, this.classSchedule);
+    }
+
     constructor(course: Course) {
         this.professor = course.professor;
         this.classSchedule = course.classSchedule;
