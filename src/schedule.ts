@@ -56,7 +56,7 @@ export class Schedule {
                         continue;
                     }
                     if (sessionOverlap(otherCourseSession, courseSession)) {
-                        logFilterOut(course, "Overlapping sessions");
+                        logFilterOut(course, "Overlapping sessions", self[i]);
                         return false;
                     }
                 }
@@ -66,10 +66,20 @@ export class Schedule {
     }
 }
 
-function logFilterOut(course: Course, reason: string): void {
-    console.log(`Course ${course.title} from professor ${course.professor} was filtered out. Reason: ${reason}. The schedule was:`);
-    for (let day of days) {
-        console.log(course.getSession(day) ? `${day}: ${course.getSession(day).startTime} - ${course.getSession(day).endTime}, ` : "");
+function logFilterOut(course: Course, reason: string, otherCourse?: Course): void {
+    if (reason === "Duplicate title") {
+        console.log(`Course ${course.title} from professor ${course.professor} was filtered out in favor of another course with the same title.`);
+    } else if (reason === "Overlapping sessions") {
+        console.log(`Course ${course.title} from professor ${course.professor} was filtered out in favor of the overlapping course ${otherCourse.title} from professor ${otherCourse.professor}. The overlaps found were:`);
+        for (let day of days) {
+            // log the startTime and endTime of the course and the otherCourse
+            let courseSession = course.getSession(day);
+            let otherCourseSession = otherCourse.getSession(day);
+            if (courseSession === undefined || otherCourseSession === undefined || !sessionOverlap(courseSession, otherCourseSession)) {
+                continue;
+            }
+            console.log(`${day}: ${courseSession.startTime} - ${courseSession.endTime} overlapped by ${otherCourseSession.startTime} - ${otherCourseSession.endTime}`);
+        }
     }
 }
 
