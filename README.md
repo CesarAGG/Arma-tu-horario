@@ -37,10 +37,10 @@ npm install webpack webpack-cli --save-dev
 npm install typescript ts-loader --save-dev
 ```
 
-- Correr webpack (esto es lo unico que se necesita despues de hacer el setup)
+- Correr npm run build (esto es lo unico que se necesita despues de hacer el setup, la ventaja de usar este comando es que puedes configurar tu IDE para que lo haga por ti con cierta combinacion de teclas)
 
 ```powershell
-npx webpack
+npm run build
 ```
 
 - El archivo .js actualizado se encuentra en `dist/bundle.js`
