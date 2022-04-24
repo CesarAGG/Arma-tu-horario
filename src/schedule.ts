@@ -126,8 +126,14 @@ class DaySessions {
             }
         }
         this.sortSessions();
-        this.startTime = this.sessions[0].startTime;
-        this.endTime = this.sessions[this.sessions.length - 1].endTime;
+        console.log(this);
+        if (this.sessions.length > 0) {
+            this.startTime = this.sessions[0].startTime;
+            this.endTime = this.sessions[this.sessions.length - 1].endTime;
+        } else {
+            this.startTime = null;
+            this.endTime = null;
+        }
     }
 
     private sortSessions(): void {
