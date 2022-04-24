@@ -37,14 +37,9 @@ export function allScheduleOptions(courses: Course[]): Schedule[] {
         schedules.push(new Schedule([]));
     }
 
-    console.log(j);
     buildSchedules(j, schedules, allCourseOptions, allTitles[0]);
-    // purge all elements that are not the same length as allOptions.length
-    for (let schedule of schedules) {
-        if (schedule.courses.length !== allTitles.length) {
-            schedule.courses.pop();
-        }
-    }
+    // add only elements that are the same length as allTitles.length
+    schedules = schedules.filter(s => s.courses.length === allTitles.length);
 
     return schedules;
 }
