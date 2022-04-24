@@ -51,7 +51,6 @@ export function allScheduleOptions(courses: Course[]): Schedule[] {
 
 function buildSchedules(sub: number, schedules: Schedule[], allCourseOptions: { [key: string]: AllCourseOptions }, currentCourse: string): void {
     let i = allTitles.indexOf(currentCourse);
-    console.log(currentCourse);
 
     let k = -1;
     for (let j = 0; j < schedules.length; j++) {
@@ -59,15 +58,10 @@ function buildSchedules(sub: number, schedules: Schedule[], allCourseOptions: { 
             k++;
             k %= allCourseOptions[currentCourse].options.length;
         }
-        console.log(k + "added");
         schedules[j].addCourse(allCourseOptions[currentCourse].options[k].toCourse(currentCourse));
     }
-    console.log(schedules);
 
     if (i < allTitles.length - 1) {
         buildSchedules(sub / allCourseOptions[currentCourse].options.length, schedules, allCourseOptions, allTitles[i + 1]);
-    }
-    else {
-        console.log("Done");
     }
 }
