@@ -20,6 +20,7 @@ export abstract class compactScore {
         let timeDifferenceInMinutes = parseTime(endTime) - parseTime(startTime);
         let activeDaysModifier = MODIFIER_VALUE + (1 - MODIFIER_VALUE) * (activeDays / 6);
         score += timeDifferenceInMinutes / (activeDaysModifier * 1440);
+        score = Math.round((score + Number.EPSILON) * 100000) / 100000
         return score;
     }
 }

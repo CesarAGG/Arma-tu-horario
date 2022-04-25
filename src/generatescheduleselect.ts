@@ -2,7 +2,7 @@ import { Schedule } from "./schedule";
 import { timeTableDrawer } from "./generatetimetable";
 
 export class ScheduleSelectorGen {
-    private static _generate(schedules: Schedule[]): void {
+    private static _generate(schedules: Schedule[], labels: string[]): void {
         let selectiondiv = document.getElementById("scheduleselection");
         selectiondiv.innerHTML = "";
         let form = document.createElement("form");
@@ -18,7 +18,7 @@ export class ScheduleSelectorGen {
             // Then the label
             let label = document.createElement("label");
             label.setAttribute("for", "Schedule" + schedules.indexOf(schedule).toString());
-            label.innerHTML = schedules.indexOf(schedule).toString() + ": ";
+            label.innerHTML = schedules.indexOf(schedule).toString() + ": " + labels[schedules.indexOf(schedule)];
             form.appendChild(label);
             // Then a line break
             let br = document.createElement("br");
@@ -28,13 +28,13 @@ export class ScheduleSelectorGen {
         ScheduleSelectorGen.addTimeTableGenToButtons(schedules);
     }
 
-    static generate(schedules: Schedule[]): void {
+    static generate(schedules: Schedule[], labels: string[]): void {
         window.setTimeout(function () {
             var element = document.getElementById("table");
             if (element) {
-                ScheduleSelectorGen._generate(schedules);
+                ScheduleSelectorGen._generate(schedules, labels);
             } else {
-                ScheduleSelectorGen.generate(schedules);
+                ScheduleSelectorGen.generate(schedules, labels);
             }
         }, 500)
     }

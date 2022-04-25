@@ -28,3 +28,9 @@ th {
     background-color: rgb(126, 126, 126);
     color: #fff;
 }
+
+#scheduleselection {
+    width: 150px;
+    max-height: 300px;
+    overflow-y: scroll;
+}
