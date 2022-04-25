@@ -14,12 +14,16 @@ export abstract class compactScore {
      */
     static getScore(schedule: Schedule): number {
         let score = 0;
-        let startTime = schedule.earliestStartTime;
-        let endTime = schedule.latestEndTime;
+        for (let daySession of schedule.allDaySessions) {
+            let startTime = parseTime(daySession.startTime);
+            let endTime = parseTime(daySession.endTime);
+            let timeDiff = endTime - startTime;
+            score += timeDiff
+        }
+
         let activeDays = schedule.activeDays;
-        let timeDifferenceInMinutes = parseTime(endTime) - parseTime(startTime);
         let activeDaysModifier = MODIFIER_VALUE + (1 - MODIFIER_VALUE) * (activeDays / 6);
-        score += timeDifferenceInMinutes / (activeDaysModifier * 1440);
+        score = score / (activeDaysModifier * 1440);
         score = Math.round((score + Number.EPSILON) * 100000) / 100000
         return score;
     }
