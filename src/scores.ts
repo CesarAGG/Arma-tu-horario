@@ -24,7 +24,12 @@ export abstract class compactScore {
         let activeDays = schedule.activeDays;
         let activeDaysModifier = MODIFIER_VALUE + (1 - MODIFIER_VALUE) * (activeDays / 6);
         score = score / activeDaysModifier;
-        score = Math.round((score * 100 + Number.EPSILON) * 1000) / 1000
+        console.log(score);
+        score = Math.round((compactScore.sigmoidFilter(score) * 100 + Number.EPSILON) * 100) / 100
         return score + "%";
+    }
+
+    private static sigmoidFilter(value: number): number {
+        return 1 / (1 + Math.exp(-21.41 * (value - 0.73))) * 1.003086554;
     }
 }
