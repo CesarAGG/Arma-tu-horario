@@ -1,5 +1,5 @@
 import { Course, ISession, ICompleteSession } from "./course";
-import { Day, Time, parseTime } from "./mydaytime";
+import { Day, Time, parseTime, numberToTime } from "./mydaytime";
 
 let days: Day[] = ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday"];
 
@@ -8,6 +8,8 @@ export class Schedule {
     earliestStartTime: Time;
     latestEndTime: Time;
     allDaySessions: DaySessions[] = [];
+    activeDays: number = 0;
+    interval: Time = "00:30";
 
     constructor(courses: Course[]) {
         this.courses = courses;
@@ -16,6 +18,9 @@ export class Schedule {
         this.filterOutDuplicateCourses();
         this.filterOutOverlappingCourses();
         this.setAllDaySessions();
+        this.setEarliestStartTime();
+        this.setLatestEndTime();
+        this.setActiveDays();
     }
 
     getCoursesJSON(): any {
@@ -30,6 +35,9 @@ export class Schedule {
         this.filterOutDuplicateCourses();
         this.filterOutOverlappingCourses();
         this.setAllDaySessions();
+        this.setEarliestStartTime();
+        this.setLatestEndTime();
+        this.setActiveDays();
     }
 
     getDaySessions(day: Day): DaySessions {
@@ -50,7 +58,38 @@ export class Schedule {
 
     private setEarliestStartTime(): void {
         let earliestStartTime = parseTime("24:00");
-        // TODO: finish this
+        for (let daySession of this.allDaySessions) {
+            if (daySession.startTime !== null) {
+                let daySessionEarliestStartTime = parseTime(daySession.startTime);
+                if (daySessionEarliestStartTime < earliestStartTime) {
+                    earliestStartTime = daySessionEarliestStartTime;
+                }
+            }
+        }
+        this.earliestStartTime = numberToTime(earliestStartTime);
+    }
+
+    private setLatestEndTime(): void {
+        let latestEndTime = parseTime("00:00");
+        for (let daySession of this.allDaySessions) {
+            if (daySession.endTime !== null) {
+                let daySessionLatestEndTime = parseTime(daySession.endTime);
+                if (daySessionLatestEndTime > latestEndTime) {
+                    latestEndTime = daySessionLatestEndTime;
+                }
+            }
+        }
+        this.latestEndTime = numberToTime(latestEndTime);
+    }
+
+    private setActiveDays(): void {
+        let activeDays = 0;
+        for (let i = 0; i < this.allDaySessions.length; i++) {
+            if (this.allDaySessions[i].startTime !== null) {
+                activeDays++;
+            }
+        }
+        this.activeDays = activeDays;
     }
 
     /**
@@ -126,7 +165,6 @@ class DaySessions {
             }
         }
         this.sortSessions();
-        console.log(this);
         if (this.sessions.length > 0) {
             this.startTime = this.sessions[0].startTime;
             this.endTime = this.sessions[this.sessions.length - 1].endTime;
