@@ -14,12 +14,19 @@ export abstract class compactScore {
      */
     static getScore(schedule: Schedule): string {
         let score = 1;
+        let timeDiffs: number[] = [];
+
         for (let daySession of schedule.allDaySessions) {
             let startTime = parseTime(daySession.startTime);
             let endTime = parseTime(daySession.endTime);
             let timeDiff = endTime - startTime;
+            timeDiffs.push(timeDiff);
             score -= timeDiff / 7 / 1440;
         }
+
+        // small penalty for timediffs having a high variation
+        let timeDiffVariation = Math.max(...timeDiffs) - Math.min(...timeDiffs);
+        score -= timeDiffVariation / 7 / 1440;
 
         let activeDays = schedule.activeDays;
         let activeDaysModifier = MODIFIER_VALUE + (1 - MODIFIER_VALUE) * (activeDays / 6);
@@ -30,6 +37,6 @@ export abstract class compactScore {
     }
 
     private static sigmoidFilter(value: number): number {
-        return 1 / (1 + Math.exp(-21.41 * (value - 0.73))) * 1.003086554;
+        return 1 / (1 + Math.exp(-21.41 * (value - 0.73)));
     }
 }
