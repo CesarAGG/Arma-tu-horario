@@ -37,6 +37,6 @@ export abstract class compactScore {
     }
 
     private static sigmoidFilter(value: number): number {
-        return 1 / (1 + Math.exp(-21.41 * (value - 0.73)));
+        return 1 / (1 + Math.exp(-20.68 * (value - 0.69)));
     }
 }
