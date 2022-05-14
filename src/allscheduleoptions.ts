@@ -53,7 +53,7 @@ function buildSchedules(sub: number, schedules: Schedule[], allCourseOptions: { 
             k++;
             k %= allCourseOptions[currentCourse].options.length;
         }
-        schedules[j].addCourse(allCourseOptions[currentCourse].options[k].toCourse(currentCourse));
+        schedules[j].addCourse(allCourseOptions[currentCourse].toCourse(k));
     }
 
     if (i < allTitles.length - 1) {
