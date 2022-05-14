@@ -8,7 +8,6 @@ export class AllCourseOptions {
     private _options: CourseOption[] = [];
 
     /**
-     * Class constructor.
      * This constructor will filter out any course schedules that do not have the given title.
      * 
      * @param courses An array of Course objects.
