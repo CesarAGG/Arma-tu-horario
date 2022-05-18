@@ -1,6 +1,7 @@
 # Arma-tu-horario
 
 Producto Integrador de Aprendizaje de la Unidad de Aprendizaje "Programación Orientada a Objetos"
+
 Tambien es proyecto personal, pienso seguirlo actualizando
 
 ## Construir el proyecto (Primera vez)
