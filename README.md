@@ -4,6 +4,12 @@ Producto Integrador de Aprendizaje de la Unidad de Aprendizaje "Programación Or
 
 Tambien es proyecto personal, pienso seguirlo actualizando
 
+## TODO
+
+- Añadir doxygen a CADA funcion
+- Reorganizar en diferentes carpetas y clases
+- Activar strict settings en typescript y refactorizar para cumplir con todos los requisitos
+
 ## Construir el proyecto (Primera vez)
 
 - Instalar node.js (esto depende del sistema operativo, con esto se instala tambien npm)
