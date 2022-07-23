@@ -18,7 +18,7 @@ export class ScheduleSelectorGen {
             // Then the label
             let label = document.createElement("label");
             label.setAttribute("for", "Schedule" + schedules.indexOf(schedule).toString());
-            label.innerHTML = `#${schedules.indexOf(schedule) + 1}: ${labels[schedules.indexOf(schedule)]}`;
+            label.innerHTML = `#${schedules.indexOf(schedule) + 1}: ${labels[schedules.indexOf(schedule)]} - ${schedule.totalHours}h`;
             form.appendChild(label);
             // Then a line break
             let br = document.createElement("br");

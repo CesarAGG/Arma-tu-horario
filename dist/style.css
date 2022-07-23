@@ -30,7 +30,7 @@ th {
 }
 
 #scheduleselection {
-    width: 150px;
+    width: 250px;
     max-height: 300px;
     overflow-y: scroll;
 }

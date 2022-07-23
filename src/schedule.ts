@@ -8,6 +8,7 @@ export class Schedule {
     earliestStartTime: Time;
     latestEndTime: Time;
     allDaySessions: DaySessions[] = [];
+    totalHours: number;
     activeDays: number = 0;
     interval: Time = "00:30";
 
@@ -21,6 +22,7 @@ export class Schedule {
         this.setEarliestStartTime();
         this.setLatestEndTime();
         this.setActiveDays();
+        this.setTotalHours();
     }
 
     getCoursesJSON(): any {
@@ -38,6 +40,7 @@ export class Schedule {
         this.setEarliestStartTime();
         this.setLatestEndTime();
         this.setActiveDays();
+        this.setTotalHours();
     }
 
     getDaySessions(day: Day): DaySessions {
@@ -80,6 +83,14 @@ export class Schedule {
             }
         }
         this.latestEndTime = numberToTime(latestEndTime);
+    }
+
+    private setTotalHours(): void {
+        let totalHours = 0;
+        for (let daySession of this.allDaySessions) {
+            totalHours += (parseTime(daySession.endTime ?? "00:00") - parseTime(daySession.startTime ?? "00:00")) / 60;
+        }
+        this.totalHours = totalHours;
     }
 
     private setActiveDays(): void {

@@ -1,7 +1,7 @@
 import { Schedule } from "./schedule";
 import { Day, Time, parseTime, numberToTime } from "./mydaytime";
 let days: Day[] = ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday"];
-const MODIFIER_VALUE = 0.95
+const MODIFIER_VALUE = 0.96
 
 export abstract class compactScore {
     /**
@@ -21,12 +21,12 @@ export abstract class compactScore {
             let endTime = parseTime(daySession.endTime ?? "00:00");
             let timeDiff = endTime - startTime;
             timeDiffs.push(timeDiff);
-            score -= timeDiff / 7 / 1440;
+            score -= timeDiff / 7 / 1000;
         }
 
         // small penalty for timediffs having a high variation
         let timeDiffVariation = Math.max(...timeDiffs) - Math.min(...timeDiffs);
-        score -= timeDiffVariation / 7 / 1440;
+        score -= timeDiffVariation / 7 / 2500;
 
         // small penalty for inconsistent start times
         let latestStartTime: Time
@@ -38,7 +38,7 @@ export abstract class compactScore {
             }
         }
         let startTimeDiff = parseTime(latestStartTime) - parseTime(schedule.earliestStartTime);
-        score -= startTimeDiff / 7 / 500;
+        score -= startTimeDiff / 7 / 3000;
 
         let activeDays = schedule.activeDays;
         let activeDaysModifier = MODIFIER_VALUE + (1 - MODIFIER_VALUE) * (activeDays / 6);
@@ -48,6 +48,6 @@ export abstract class compactScore {
     }
 
     private static sigmoidFilter(value: number): number {
-        return 1 / (1 + Math.exp(-20.68 * (value - 0.69)));
+        return 1 / (1 + Math.exp(-20.68 * (value - 0.645)));
     }
 }
