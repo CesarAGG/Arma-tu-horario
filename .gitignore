@@ -5,3 +5,4 @@ src/*.js
 # Por ahora ignoramos bundle.js ya que solo estamos haciendo pruebas
 bundle.js
 .DS_Store
+*.zip
