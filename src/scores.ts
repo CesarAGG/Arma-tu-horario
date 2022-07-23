@@ -17,8 +17,8 @@ export abstract class compactScore {
         let timeDiffs: number[] = [];
 
         for (let daySession of schedule.allDaySessions) {
-            let startTime = parseTime(daySession.startTime);
-            let endTime = parseTime(daySession.endTime);
+            let startTime = parseTime(daySession.startTime ?? "00:00");
+            let endTime = parseTime(daySession.endTime ?? "00:00");
             let timeDiff = endTime - startTime;
             timeDiffs.push(timeDiff);
             score -= timeDiff / 7 / 1440;
@@ -28,10 +28,21 @@ export abstract class compactScore {
         let timeDiffVariation = Math.max(...timeDiffs) - Math.min(...timeDiffs);
         score -= timeDiffVariation / 7 / 1440;
 
+        // small penalty for inconsistent start times
+        let latestStartTime: Time
+        for (let daySession of schedule.allDaySessions) {
+            if (daySession.startTime) {
+                if (!latestStartTime || parseTime(daySession.startTime) > parseTime(latestStartTime)) {
+                    latestStartTime = daySession.startTime;
+                }
+            }
+        }
+        let startTimeDiff = parseTime(latestStartTime) - parseTime(schedule.earliestStartTime);
+        score -= startTimeDiff / 7 / 500;
+
         let activeDays = schedule.activeDays;
         let activeDaysModifier = MODIFIER_VALUE + (1 - MODIFIER_VALUE) * (activeDays / 6);
         score = score / activeDaysModifier;
-        console.log(score);
         score = Math.round((compactScore.sigmoidFilter(score) * 100 + Number.EPSILON) * 100) / 100
         return score + "%";
     }
