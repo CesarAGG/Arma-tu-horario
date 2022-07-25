@@ -2,6 +2,38 @@ import { Schedule } from "./schedule";
 import { Day, Time, parseTime, numberToTime } from "./mydaytime";
 
 const DAYS: Day[] = ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday"];
+const nomenclature = {
+    "07:00": "m1",
+    "07:30": "m2",
+    "08:00": "m3",
+    "08:30": "m4",
+    "09:00": "m5",
+    "09:30": "m6",
+    "10:00": "m7",
+    "10:30": "m8",
+    "11:00": "m9",
+    "11:30": "m10",
+    "12:00": "v1",
+    "12:30": "v2",
+    "13:00": "v3",
+    "13:30": "v4",
+    "14:00": "v5",
+    "14:30": "v6",
+    "15:00": "v7",
+    "15:30": "v8",
+    "16:00": "v9",
+    "16:30": "v10",
+    "17:00": "v11",
+    "17:30": "v12",
+    "18:00": "n1",
+    "18:30": "n2",
+    "19:00": "n3",
+    "19:30": "n4",
+    "20:00": "n5",
+    "20:30": "n6",
+    "21:00": "n7",
+    "21:30": "n8"
+}
 
 // const interval: Time = "00:30"
 // const startTime: Time = "00:00";
@@ -26,6 +58,9 @@ export abstract class timeTableDrawer {
         let headerCell = document.createElement("th");
         headerCell.innerHTML = "Time";
         headerRow.appendChild(headerCell);
+        headerCell = document.createElement("th");
+        headerCell.innerHTML = "Nom";
+        headerRow.appendChild(headerCell);
         for (let day of DAYS) {
             headerCell = document.createElement("th");
             headerCell.innerHTML = day;
@@ -36,14 +71,25 @@ export abstract class timeTableDrawer {
         // Generate the table body
         for (let i = parseTime(startTime); i < parseTime(endTime); i += parseTime(interval)) {
             let row = document.createElement("tr");
+
             let timeCell = document.createElement("td");
-            timeCell.setAttribute("id", "timeCell");
+            timeCell.setAttribute("class", "timeCell");
             timeCell.innerHTML = numberToTime(i);
             row.appendChild(timeCell);
+
+            let nomCell = document.createElement("td");
+            nomCell.setAttribute("class", "nomCell");
+            if (numberToTime(i) in nomenclature) {
+                nomCell.innerHTML = (nomenclature as any)[numberToTime(i)]; // skip property checking since we are already doing it
+            } else {
+                nomCell.innerHTML = "N/A";
+            }
+            row.appendChild(nomCell);
+
             for (let day of DAYS) {
                 if (matrix[DAYS.indexOf(day)][i / parseTime(interval)] !== null) {
                     let cell = document.createElement("td");
-                    cell.setAttribute("id", "cell");
+                    cell.setAttribute("class", "cell");
                     for (let session of allSessions[DAYS.indexOf(day)].sessions) {
                         if (session.startTime == numberToTime(i)) {
                             cell.rowSpan = (parseTime(session.endTime) - i) / parseTime(interval);
